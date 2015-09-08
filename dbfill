@@ -1,0 +1,60 @@
+#!/usr/bin/python
+from os import getcwd, listdir, mkdir
+from os.path import isfile, join, splitext, exists
+from shutil import copyfile, rmtree
+
+WORKING_DIR = getcwd()
+CONCRETE_DIR = join(WORKING_DIR, 'concrete')
+ABSTRACT_DIR = join(WORKING_DIR, 'abstract')
+DRAWABLE_DIR = join(WORKING_DIR, 'drawable')
+
+if exists(DRAWABLE_DIR): rmtree(DRAWABLE_DIR)
+mkdir(DRAWABLE_DIR)
+
+JTRUE = 'true'
+JFALSE = 'false'
+
+JDBFILL = ''
+LINE_FMT = 'tiles.add(new Tile("{}", TileColor.{}, {}, TileShape.{}, TileType.{}));\n'
+
+concrete = [f for f in listdir(CONCRETE_DIR) if isfile(join(CONCRETE_DIR, f))]
+abstract = [f for f in listdir(ABSTRACT_DIR) if isfile(join(ABSTRACT_DIR, f))]
+
+colors = set()
+shapes = set()
+
+for c in concrete:
+    # remove extension
+    tokens = splitext(c)[0].split('_')
+
+    img_name = tokens[0].lower()
+    img_color = tokens[1].upper()
+    img_directable = JTRUE if tokens[2] == 'y' else JFALSE
+    img_shape = tokens[3].upper()
+    img_type = tokens[4].upper()
+
+    colors.add(img_color)
+    shapes.add(img_shape)
+
+    JDBFILL += LINE_FMT.format(img_name, img_color, img_directable, img_shape, img_type)
+    copyfile(join(CONCRETE_DIR, c), join(DRAWABLE_DIR, img_name + '.png'))
+
+JDBFILL += '\n'
+
+for a in abstract:
+    # remove extension
+    tokens = splitext(a)[0].split('_')
+
+    img_name = tokens[0].lower()
+    img_directable = JTRUE if tokens[2] == 'y' else JFALSE
+    img_shape = tokens[3].upper()
+    img_type = tokens[4].upper()
+
+    for color in colors:
+        JDBFILL += LINE_FMT.format(img_name, color, img_directable, img_shape, img_type)
+
+    copyfile(join(ABSTRACT_DIR, a), join(DRAWABLE_DIR, img_name + '.png'))
+
+print JDBFILL
+print 'Colors found: ', colors
+print 'Shapes found: ', shapes
