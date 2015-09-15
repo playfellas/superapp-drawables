@@ -41,6 +41,9 @@ for c in concrete:
 
 JDBFILL += '\n'
 
+# avoid to use NONE for abstract shapes
+colors.remove('NONE')
+
 for a in abstract:
     # remove extension
     tokens = splitext(a)[0].split('_')
@@ -56,5 +59,3 @@ for a in abstract:
     copyfile(join(ABSTRACT_DIR, a), join(DRAWABLE_DIR, img_name + '.png'))
 
 print JDBFILL
-print 'Colors found: ', colors
-print 'Shapes found: ', shapes
