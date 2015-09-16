@@ -36,6 +36,11 @@ for c in concrete:
     colors.add(img_color)
     shapes.add(img_shape)
 
+    # check if the file already exists in drawable dir
+    if isfile(join(DRAWABLE_DIR, img_name + '.png')):
+        img_name += '_' + img_color.lower()
+
+
     JDBFILL += LINE_FMT.format(img_name, img_color, img_directable, img_shape, img_type)
     copyfile(join(CONCRETE_DIR, c), join(DRAWABLE_DIR, img_name + '.png'))
 
