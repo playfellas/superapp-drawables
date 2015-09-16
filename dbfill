@@ -46,8 +46,10 @@ for c in concrete:
 
 JDBFILL += '\n'
 
-# avoid to use NONE for abstract shapes
+# avoid to use NONE, WHITE and BLACK for abstract shapes
 colors.remove('NONE')
+colors.remove('BLACK')
+colors.remove('WHITE')
 
 for a in abstract:
     # remove extension
